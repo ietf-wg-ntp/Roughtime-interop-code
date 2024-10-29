@@ -1,0 +1,37 @@
+#
+# Each implementation should have the following keys:
+#  * enabled: boolean # Do we test this implementation?
+#  * server: boolean  # Does it have a server?
+#  * client: boolean  # Does it have a client? 
+#
+implementations:
+
+  cloudflare:
+    enabled: true
+    server: true
+    client: true
+  
+  craggy:
+    enabled: false
+
+  google:
+    enabled: false
+
+  nearenough:
+    enabled: false
+ 
+  node-roughtime:
+    enabled: false
+
+  pyroughtime:
+    enabled: true
+    server: false
+    client: true
+
+  roughenough:
+    enabled: true
+    server: true
+    client: true
+
+  vroughtime:
+    enabled: false
