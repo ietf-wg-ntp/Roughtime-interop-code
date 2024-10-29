@@ -1,0 +1,34 @@
+name: "plummet"
+
+# TODO: Networking
+
+services:
+
+  cloudflare:
+    build: './cloudflare'
+
+  craggy:
+    profiles:
+      - not_ready
+
+  google:
+    profiles:
+      - not_ready
+  
+  nearenough:
+    profiles:
+      - not_ready
+  
+  node-roughtime:
+    profiles:
+      - not_ready
+
+  pyroughtime:
+    build: './pyroughtime'
+
+  roughenough:
+    build: './roughenough'
+
+  vroughtime:
+    profiles:
+      - not_ready
