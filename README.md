@@ -14,6 +14,12 @@ poetry install
 
 You can then run `poetry run plummet -h` to see the help information.
 
+To build all the implementations:
+```bash
+docker compose -f implementations/docker-compose.yml build
+```
+This will take a while, and a lot of disk space.
+
 ## Licence
 
 Copyright 2024-
