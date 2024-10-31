@@ -5,6 +5,10 @@ providing the means to run both against each other.
 
 ## Development and Running
 
+All implementations are provided as git submodules, you'll need to clone this
+repository using the `--recurse-submodules`, or if you have already cloned it,
+you'll need to run `git submodule update --init --recursive`.
+
 You'll need Docker as well as [Poetry](https://python-poetry.org) installed.
 To get started, clone this repository, then run:
 ```bash
