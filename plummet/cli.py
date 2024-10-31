@@ -3,6 +3,7 @@ import yaml
 import logging
 import argparse
 from argparse import ArgumentParser
+from typing import Dict, List
 
 CMD_INFO = """
 plummet takes all the known roughtime implementations and attempts to perform
@@ -37,5 +38,16 @@ def main() -> None:
 
 # For each implementation that we know of, based on it having a client and/or
 # server, work out permutations of all.
-def generate_permutations():
-    pass
+def generate_permutations(impls: List[Dict]) -> List[Dict]:
+    permutations = []
+    for server in impls:
+        if not impls[server]['enabled'] or not impls[server]['server']:
+            continue
+        for client in impls:
+            if not impls[client]['enabled'] or not impls[client]['client']:
+                continue
+            permutations.append({
+                'server': server,
+                'client': client
+            })
+    return permutations
