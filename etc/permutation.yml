@@ -1,0 +1,43 @@
+
+#          _            This file forms as the configuration runtime for
+#        ,/_\,          testing each permutation of roughtime server and
+#      ,/_/ \_\,        client. Somewhere in between we packet capture
+#     /_/ ___ \_\       the server interface using netshoot and tcpdump.
+#    /_/ |(V)| \_\
+#      |  .-.  |        There's quite a lot of environment variables that have
+#      | / / \ |        to be set here, including:
+#      | \ \ / |        * SERVER_IMAGE - Name of the roughtime server
+#      |  '-'  |        * CLIENT_IMAGE - Name of the roughtime client
+#      '--,-,--'        * PCAP_FILE    - Filename (not path) of the pcap
+#  jgs    | |           * PERM_DIR     - Folder where the permutation keeps
+#         | |                            all outputted files, like the pcap,
+#         | |                            but also logs and anything else
+#         /\|
+#         \/|
+#          /\
+#          \/
+
+name: "plummet"
+services:
+
+  server:
+    hostname: roughtime-server
+    image: ${SERVER_IMAGE}
+    # command: run.sh 
+    ports:
+      -  2002/udp:2002/udp
+
+  client:
+    hostname: roughtime-client
+    image: ${CLIENT_IMAGE}
+    # command: run.sh with args
+    depends_on:
+      - server
+
+  pcap:
+    image: nicolaka/netshoot
+    depends_on:
+      - server
+    command: tcpdump -i eth0 -w /data/${PCAP_FILE}
+    volumes:
+      - ${PERM_DIR}:/data
