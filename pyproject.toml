@@ -7,8 +7,7 @@ authors = ["Sarah Grant <sarah.grant.ietf@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-
-[tool.poetry.dev-dependencies]
+pyyaml = "^6.0.2"
 
 [tool.poetry.scripts]
 plummet = 'plummet.cli:main'
