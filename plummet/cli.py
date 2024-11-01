@@ -94,7 +94,8 @@ def main() -> None:
         except subprocess.TimeoutExpired:
             perm_process.kill()
             logger.warn(f'Terminating server: {perm["server"]} client: {perm["client"]}')
-
+        cleanup_cmd = f'{args.container} compose -f {perm_config} down --remove-orphans'
+        subprocess.run(cleanup_cmd.split(' '), env=env)
 
 # For each implementation that we know of, based on it having a client and/or
 # server, work out permutations of all.
