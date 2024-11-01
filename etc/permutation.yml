@@ -8,10 +8,10 @@
 #      | / / \ |        to be set here, including:
 #      | \ \ / |        * SERVER_IMAGE - Name of the roughtime server
 #      |  '-'  |        * CLIENT_IMAGE - Name of the roughtime client
-#      '--,-,--'        * PCAP_FILE    - Filename (not path) of the pcap
-#  jgs    | |           * PERM_DIR     - Folder where the permutation keeps
-#         | |                            all outputted files, like the pcap,
+#      '--,-,--'        * PERM_DIR     - Folder where the permutation keeps
+#  jgs    | |                            all outputted files, like the pcap,
 #         | |                            but also logs and anything else
+#         | |
 #         /\|
 #         \/|
 #          /\
@@ -23,21 +23,28 @@ services:
   server:
     hostname: roughtime-server
     image: ${SERVER_IMAGE}
-    # command: run.sh 
+    pull_policy: never
+    command: /run.sh server
     ports:
-      -  2002/udp:2002/udp
+      -  2002:2002/udp
+    volumes:
+      - ${PERM_DIR}:/data
 
   client:
     hostname: roughtime-client
     image: ${CLIENT_IMAGE}
-    # command: run.sh with args
+    pull_policy: never
+    command: /run.sh client
     depends_on:
       - server
+    volumes:
+      - ${PERM_DIR}:/data
 
-  pcap:
+  server_pcap:
     image: nicolaka/netshoot
     depends_on:
       - server
-    command: tcpdump -i eth0 -w /data/${PCAP_FILE}
+    network_mode: service:server
+    command: tcpdump -i eth0 -w /data/server.pcap
     volumes:
       - ${PERM_DIR}:/data
