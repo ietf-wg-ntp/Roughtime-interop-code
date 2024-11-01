@@ -93,7 +93,7 @@ def main() -> None:
             perm_process.wait(args.timeout)
         except subprocess.TimeoutExpired:
             perm_process.kill()
-            logger.warn(f'I had to terminate permutation server: {perm["server"]} client: {perm["client"]} because it was slow ☹️')
+            logger.warn(f'Terminating server: {perm["server"]} client: {perm["client"]}')
 
 
 # For each implementation that we know of, based on it having a client and/or
