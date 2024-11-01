@@ -44,25 +44,33 @@ def main() -> None:
     permutations = generate_permutations(args.impls['implementations'])
 
     # Prepare the location
-    start_time = datetime.datetime.now(datetime.UTC)
-    # Colons and other characters can be iffy in folder names
-    results_dir = start_time.strftime("%Y%m%dT%H%M%SZ")
-
-    if args.dry_run:
-        logger.info('Dry-run: Create folder {results_dir}')
+    start_time = datetime.datetime.now(datetime.timezone.utc)
+    results_dir = start_time.strftime("%Y%m%dT%H%M%SZ") # Colons can be iffy
+    if not os.path.isabs(args.output_dir):
+        output_dir = os.path.join(os.path.abspath(args.output_dir), results_dir)
     else:
-        # os.mkdir()
+        output_dir = os.path.join(args.output_dir, results_dir)
+    logger.debug(f'Results directory: {output_dir}')
 
-        pass
+    if not args.dry_run:
+        os.mkdir(output_dir)
 
-    # For each generate the docker command to run for them
+    # Iterate through each permutation, create a subdirectory, and run
     for perm in permutations:
-        cmd = generate_cmd(perm)
+        perm_dir = os.path.join(output_dir, '_'.join([perm['server'], perm['client']]))
+        logger.debug(f'Preparing to run for server: {perm["server"]} client: {perm["client"]}')
+        env = {
+            'SERVER_IMAGE': f'plummet-{perm["server"]}:latest',
+            'CLIENT_IMAGE': f'plummet-{perm["client"]}:latest',
+            'PERM_DIR': perm_dir
+        }
 
+        # Stop here if we're dry-running!
+        if args.dry_run:
+            continue
+        logger.debug(f'Creating permutation directory {perm_dir}')
+        os.mkdir(perm_dir)
 
-# Generate the docker command to run for a given permutation
-def generate_cmd(perm: Dict) -> str:
-    return ""
 
 
 # For each implementation that we know of, based on it having a client and/or
