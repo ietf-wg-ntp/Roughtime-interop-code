@@ -37,7 +37,7 @@ def main() -> None:
     try:
         args.impls = yaml.safe_load(args.impls.read())
     except yaml.YAMLError as e:
-        logger.critical('Implementations YAML appaers bad, exiting...')
+        logger.critical('Implementations YAML appears bad, exiting...')
         sys.exit(1)
 
     # Generate all the permutations of client and servers
