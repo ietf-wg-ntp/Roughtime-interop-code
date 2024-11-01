@@ -4,6 +4,7 @@ import yaml
 import logging
 import datetime
 import argparse
+import subprocess
 from argparse import ArgumentParser
 from typing import Dict, List
 
@@ -22,8 +23,12 @@ def main() -> None:
                         help='Base directory to write data out to')
     parser.add_argument('--dry-run', action=argparse.BooleanOptionalAction,
                         help="Don't make any system calls, just print")
-    parser.add_argument('--runner', default='docker',
-                        help='Path to a different container runtime')
+    parser.add_argument('--container', type=str, default='/usr/local/bin/docker',
+                        help='Path to docker or your preferred container manager')
+    parser.add_argument('--perm-config', type=str, default='etc/permutation.yml',
+                        help='Path to the ')
+    parser.add_argument('--timeout', default=10,
+                        help='Timeout in seconds for each permutation run')
     parser.add_argument('--verbose', action=argparse.BooleanOptionalAction,
                         help='Enable more verbosity')
     args = parser.parse_args()
@@ -59,18 +64,36 @@ def main() -> None:
     for perm in permutations:
         perm_dir = os.path.join(output_dir, '_'.join([perm['server'], perm['client']]))
         logger.debug(f'Preparing to run for server: {perm["server"]} client: {perm["client"]}')
+        # These environment variables **must** match whatever we use in the
+        # permutations container configuration file, or else computer will be
+        # very sad with us, and nobody wants that.
         env = {
             'SERVER_IMAGE': f'plummet-{perm["server"]}:latest',
             'CLIENT_IMAGE': f'plummet-{perm["client"]}:latest',
             'PERM_DIR': perm_dir
         }
 
-        # Stop here if we're dry-running!
-        if args.dry_run:
-            continue
         logger.debug(f'Creating permutation directory {perm_dir}')
-        os.mkdir(perm_dir)
+        if not args.dry_run:
+            os.mkdir(perm_dir)
 
+        # This could blow up if you have spaces in the full path, watch out!
+        perm_config = os.path.abspath(args.perm_config)
+        perm_cmd = f'{args.container} compose -f {perm_config} up'
+        logger.debug(f'Running `{perm_cmd}` with a {args.timeout} second timeout...')
+        logger.debug
+
+        if args.dry_run:
+            logging.info('This is the bit where we pretend to run, but are not!')
+            continue
+
+        # Let's run (away from all our problems)
+        perm_process = subprocess.Popen(perm_cmd.split(' '), env=env)
+        try:
+            perm_process.wait(args.timeout)
+        except subprocess.TimeoutExpired:
+            perm_process.kill()
+            logger.warn(f'I had to terminate permutation server: {perm["server"]} client: {perm["client"]} because it was slow ☹️')
 
 
 # For each implementation that we know of, based on it having a client and/or
