@@ -29,10 +29,6 @@ services:
   roughtimed:
     build: './roughtimed'
 
-  vadarklockan:
-    profiles:
-      - not_ready
-
   vroughtime:
     profiles:
       - not_ready

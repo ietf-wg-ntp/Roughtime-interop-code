@@ -52,8 +52,5 @@ implementations:
     client: false
     server: true
 
-  vadarklockan:
-    enabled: false
-
   vroughtime:
     enabled: false

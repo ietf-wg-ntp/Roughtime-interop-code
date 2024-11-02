@@ -19,6 +19,3 @@
 [submodule "implementations/roughtimed/roughtimed"]
 	path = implementations/roughtimed/roughtimed
 	url = https://github.com/dansarie/roughtimed.git
-[submodule "implementations/vararklockan/vadarklockan"]
-	path = implementations/vararklockan/vadarklockan
-	url = https://github.com/Netnod/vadarklockan.git
