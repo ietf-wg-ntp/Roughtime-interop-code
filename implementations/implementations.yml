@@ -28,7 +28,9 @@ implementations:
     client: true
   
   craggy:
-    enabled: false
+    enabled: true
+    server: false
+    client: true
 
   google:
     enabled: false

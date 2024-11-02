@@ -15,8 +15,7 @@ services:
     build: './cloudflare'
 
   craggy:
-    profiles:
-      - not_ready
+    build: './craggy'
 
   google:
     profiles:
