@@ -39,6 +39,35 @@ your time, read the log files, peruse the packet captures, and enjoy.
 
 Or maybe something broke, in which case please file a issue with us.
 
+## Including an Implementation
+
+Adding implementations to the harness has a few steps. For all, we use the same
+long term keypair for all, to make debugging a little easier:
+
+```
+Private key: BuXi3Chpe7Nj3gCXavLUIoGbxngyrWVa3pYIHswbzbU=
+             06e5e2dc28697bb363de00976af2d422819bc67832ad655ade96081ecc1bcdb5
+
+Public key:  Ixu7gqjJ9TU6IxsO8wxZxAFT5te6FcZZQq5vXFl35JE=
+             231bbb82a8c9f5353a231b0ef30c59c40153e6d7ba15c65942ae6f5c5977e491
+```
+
+To add an implmentation:
+
+1. Create a directory under `implementations` with the git repo under it
+2. Make a Dockerfile that builds the container. We strongly advise against
+   the common use of "builder" container patterns and using distroless, as it
+   can make debugging really difficult. Please also enable debug flags in your
+   configuration or compilation options.
+3. There should be a script in the root directory of the container called
+   "run.sh". It should take one argument, either "client", or "server". Logs
+   should be written to `/data` as client.log or server.log respectively.
+4. Make sure that key material is configured as above.
+5. `implementations/implementations.yml` is what tells plummet what is available
+   and if they have client and/or server support. Fill it in.
+6. Run plummet and check the output in `results/`.
+7. Send us a PR, and have another biscuit, you deserve it.
+
 ## Licence
 
 Copyright 2024-
