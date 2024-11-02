@@ -30,5 +30,4 @@ services:
     build: './roughtimed'
 
   vroughtime:
-    profiles:
-      - not_ready
+    build: './vroughtime'

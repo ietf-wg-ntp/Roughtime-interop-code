@@ -53,4 +53,6 @@ implementations:
     server: true
 
   vroughtime:
-    enabled: false
+    enabled: true
+    client: true
+    server: false
