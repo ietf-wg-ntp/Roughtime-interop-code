@@ -4,18 +4,12 @@
 [submodule "cloudflare/roughtime"]
 	path = implementations/cloudflare/roughtime
 	url = https://github.com/cloudflare/roughtime.git
-[submodule "google/roughtime"]
-	path = implementations/google/roughtime
-	url = https://roughtime.googlesource.com/roughtime
 [submodule "roughenough/roughenough"]
 	path = implementations/roughenough/roughenough
 	url = https://github.com/int08h/roughenough.git
 [submodule "craggy/craggy"]
 	path = implementations/craggy/craggy
 	url = https://github.com/nahojkap/craggy.git
-[submodule "nearenough/nearenough"]
-	path = implementations/nearenough/nearenough
-	url = https://github.com/int08h/nearenough.git
 [submodule "pyroughtime/pyroughtime"]
 	path = implementations/pyroughtime/pyroughtime
 	url = https://github.com/dansarie/pyroughtime.git

@@ -16,14 +16,6 @@ services:
 
   craggy:
     build: './craggy'
-
-  google:
-    profiles:
-      - not_ready
-  
-  nearenough:
-    profiles:
-      - not_ready
   
   node-roughtime:
     build: './node-roughtime'

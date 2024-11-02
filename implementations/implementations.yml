@@ -31,12 +31,6 @@ implementations:
     enabled: true
     client: true
     server: false
-
-  google:
-    enabled: false
-
-  nearenough:
-    enabled: false
  
   node-roughtime:
     enabled: true
