@@ -8,4 +8,4 @@ COPY pyroughtime/ .
 
 RUN pip install --upgrade pip
 
-RUN pip install pycryptodome ed25519
+RUN pip install pycryptodomex
