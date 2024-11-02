@@ -1,9 +1,25 @@
 #
-# Each implementation should have the following keys:
-#  * enabled: boolean # Do we test this implementation?
-#  * server: boolean  # Does it have a server?
-#  * client: boolean  # Does it have a client? 
+#      oOoOoOoOo   This YAML file forms part of the implementation config,
+#    0oOoOoOo0/|   which tells plummet which implementations exist, should be
+#    | .---. | |   run, and if they have client and/or server capability. The
+#    |{  0  }| |   names here should match the repository name under the
+#    |{ \ . }| |   implementations/ directory, and all the flags consistent.
+#    |{9 x 3}| |
+#    |{     }| |   Just a tip: when integrating a new implementation, disable
+#    |{  6  }| |   all but your new implementation and one other that has both
+#    | `---' | o   client and server support, so that way you avoid having to
+#    |_______|/    run against every permutation and it taking a lot of time,
+#    \ ____//      which we clearly don't have enough of, poetically.
+#      `----'
+#        \\
+#          \\
+#          \\
+#            \\
+#            /'\
+#          :F_P:
+#            \_/
 #
+
 implementations:
 
   cloudflare:
@@ -21,7 +37,9 @@ implementations:
     enabled: false
  
   node-roughtime:
-    enabled: false
+    enabled: true
+    client: true
+    server: false
 
   pyroughtime:
     enabled: true

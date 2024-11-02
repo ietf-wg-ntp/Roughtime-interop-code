@@ -1,7 +1,14 @@
+#
+#  .'`~~~~~~~~~~~`'.    | This docker compose file is around to list all the
+#  (  .'11 12 1'.  )    | containers and how to build them. We keep the 'name'
+#  |  :10 \    2:  |    | key identical to the other compose configuration used
+#  |  :9   @-> 3:  |    | for actually running the same so they work together.
+#  |  :8       4;  |    | The implementations that don't build yet get the
+#  '. '..7 6 5..' .'    | 'not_ready' profile, because they are, like me minutes
+#  ~-------------~  ldb | before leaving work, simply just not ready _yet_.
+#
+
 name: "plummet"
-
-# TODO: Networking
-
 services:
 
   cloudflare:
@@ -20,8 +27,7 @@ services:
       - not_ready
   
   node-roughtime:
-    profiles:
-      - not_ready
+    build: './node-roughtime'
 
   pyroughtime:
     build: './pyroughtime'
