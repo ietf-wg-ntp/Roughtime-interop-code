@@ -26,6 +26,14 @@ services:
   roughenough:
     build: './roughenough'
 
+  roughtimed:
+    profiles:
+      - not_ready
+
+  vadarklockan:
+    profiles:
+      - not_ready
+
   vroughtime:
     profiles:
       - not_ready

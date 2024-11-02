@@ -47,5 +47,11 @@ implementations:
     client: true
     server: true
 
+  roughtimed:
+    enabled: false
+
+  vadarklockan:
+    enabled: false
+
   vroughtime:
     enabled: false
