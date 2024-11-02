@@ -1,5 +1,7 @@
 FROM golang:latest
 
+COPY run.sh /
+
 WORKDIR /usr/src/app
 
 EXPOSE 2002/udp
