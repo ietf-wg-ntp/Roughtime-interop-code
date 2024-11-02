@@ -27,8 +27,7 @@ services:
     build: './roughenough'
 
   roughtimed:
-    profiles:
-      - not_ready
+    build: './roughtimed'
 
   vadarklockan:
     profiles:

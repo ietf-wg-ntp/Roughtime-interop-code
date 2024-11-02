@@ -48,7 +48,9 @@ implementations:
     server: true
 
   roughtimed:
-    enabled: false
+    enabled: true
+    client: false
+    server: true
 
   vadarklockan:
     enabled: false
