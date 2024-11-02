@@ -4,7 +4,7 @@
 
 const roughtime = require('./index.js');
 
-const pubkey = Uint8Array.from(Buffer.from('7CAOYYegB+1zZlnE87ecGIVUc3dKv46jEOokrLhJP00=', 'base64'));
+const pubkey = Uint8Array.from(Buffer.from('Ixu7gqjJ9TU6IxsO8wxZxAFT5te6FcZZQq5vXFl35JE=', 'base64'));
 
 roughtime({host: 'roughtime-server', pubkey: pubkey}, (err, result) => {
 

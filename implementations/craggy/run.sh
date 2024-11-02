@@ -2,7 +2,7 @@
 
 MODE=$1
 
-KEY='7CAOYYegB+1zZlnE87ecGIVUc3dKv46jEOokrLhJP00='
+KEY='Ixu7gqjJ9TU6IxsO8wxZxAFT5te6FcZZQq5vXFl35JE='
 
 if [[ "$MODE" == "client" ]]; then
     /usr/src/app/build/cli/craggy-cli -h roughtime-server:2002 -k "$KEY" &> /data/client.log;
