@@ -11,6 +11,9 @@
 name: "plummet"
 services:
 
+  butterfield:
+    build: './butterfield'
+
   cloudflare:
     build: './cloudflare'
 

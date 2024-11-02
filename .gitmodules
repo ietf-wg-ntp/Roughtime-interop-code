@@ -19,3 +19,6 @@
 [submodule "implementations/roughtimed/roughtimed"]
 	path = implementations/roughtimed/roughtimed
 	url = https://github.com/dansarie/roughtimed.git
+[submodule "implementations/butterfield/butterfield"]
+	path = implementations/butterfield/butterfield
+	url = https://github.com/signalsforgranted/butterfield.git

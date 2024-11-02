@@ -22,6 +22,11 @@
 
 implementations:
 
+  butterfield:
+    enabled: false
+    client: false
+    server: true
+
   cloudflare:
     enabled: true
     client: true
