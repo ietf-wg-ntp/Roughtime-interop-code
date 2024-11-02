@@ -15,3 +15,5 @@ RUN mkdir build && \
     make
 
 COPY roughtimed.conf .
+
+RUN chmod 600 roughtimed.conf
