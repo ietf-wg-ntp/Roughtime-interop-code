@@ -59,6 +59,8 @@ def main() -> None:
 
     if not args.dry_run:
         os.mkdir(output_dir)
+    
+    logger.debug(f'Iterating over {len(permutations)} permutations')
 
     # Iterate through each permutation, create a subdirectory, and run
     for perm in permutations:
