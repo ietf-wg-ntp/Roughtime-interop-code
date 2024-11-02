@@ -59,7 +59,7 @@ def main() -> None:
 
     if not args.dry_run:
         os.mkdir(output_dir)
-    
+
     logger.debug(f'Iterating over {len(permutations)} permutations')
 
     # Iterate through each permutation, create a subdirectory, and run
@@ -92,7 +92,7 @@ def main() -> None:
         # Let's run (away from all our problems)
         perm_process = subprocess.Popen(perm_cmd.split(' '), env=env)
         try:
-            perm_process.wait(args.timeout)
+            perm_process.wait(float(args.timeout))
         except subprocess.TimeoutExpired:
             perm_process.kill()
             logger.warn(f'Terminating server: {perm["server"]} client: {perm["client"]}')
