@@ -24,13 +24,13 @@ implementations:
 
   cloudflare:
     enabled: true
-    server: true
     client: true
+    server: true
   
   craggy:
     enabled: true
-    server: false
     client: true
+    server: false
 
   google:
     enabled: false
@@ -45,13 +45,13 @@ implementations:
 
   pyroughtime:
     enabled: true
-    server: false
     client: true
+    server: false
 
   roughenough:
     enabled: true
-    server: true
     client: true
+    server: true
 
   vroughtime:
     enabled: false
