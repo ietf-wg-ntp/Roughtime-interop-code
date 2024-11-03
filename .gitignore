@@ -1,2 +1,3 @@
+*.swp
 plummet/__pycache__
 results/*
