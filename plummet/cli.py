@@ -1,12 +1,28 @@
 import sys
 import os
+import json
 import yaml
+import base64
+import jinja2
 import logging
 import datetime
+import tempfile
 import argparse
 import subprocess
+import scapy.utils
+import importlib.util
+from scapy.all import UDP
 from argparse import ArgumentParser
 from typing import Dict, List
+
+# Kludle for loading pyroughtime from implementations folder.
+dirname = os.path.dirname(__file__)
+filename = os.path.join(dirname,
+        '../implementations/pyroughtime/pyroughtime/pyroughtime.py')
+spec = importlib.util.spec_from_file_location('pyroughtime', filename)
+pyroughtime = importlib.util.module_from_spec(spec)
+sys.modules["module.name"] = pyroughtime
+spec.loader.exec_module(pyroughtime)
 
 CMD_INFO = """
 plummet takes all the known roughtime implementations and attempts to perform
@@ -62,6 +78,8 @@ def main() -> None:
 
     logger.debug(f'Iterating over {len(permutations)} permutations')
 
+    results = []
+
     # Iterate through each permutation, create a subdirectory, and run
     for perm in permutations:
         perm_dir = os.path.join(output_dir, '_'.join([perm['server'], perm['client']]))
@@ -99,6 +117,45 @@ def main() -> None:
         cleanup_cmd = f'{args.container} compose -f {perm_config} down --remove-orphans'
         subprocess.run(cleanup_cmd.split(' '), env=env)
 
+        # Gather results
+        res = {
+            'client': perm['client'],
+            'server': perm['server'],
+            'result': 'unknown'
+        }
+        with open(os.path.join(perm_dir, 'client.log')) as f:
+            res['client_log'] = f.read()
+        with open(os.path.join(perm_dir, 'server.log')) as f:
+            res['server_log'] = f.read()
+        with open(os.path.join(perm_dir, 'server.pcap'), 'rb') as f:
+            res['pcap'] = base64.b64encode(f.read()).decode('ASCII')
+        results.append(res)
+
+    # Create JSON file with results.
+    with open(os.path.join(output_dir, 'result.json'), 'w') as f:
+        f.write(json.dumps(results, indent=2, sort_keys=True))
+
+    # Parse results PCAP.
+    for r in results:
+        pcap_file = tempfile.NamedTemporaryFile(delete=True)
+        pcap_file.write(base64.b64decode(r['pcap']))
+        pcap_file.flush()
+        pcap = scapy.utils.rdpcap(pcap_file.name)
+        pcap_file.close()
+        r['packets'] = []
+        for p in pcap:
+            if p.sport == 2002 or p.dport == 2002:
+                # p.show()
+                rp = pyroughtime.RoughtimePacket(packet=p.load)
+                r['packets'].append(packet_tree_str(rp))
+
+    # Render results HTML file.
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    template = env.get_template('template_results.html')
+    with open(os.path.join(output_dir, 'result.html'), 'w') as f:
+        f.write(template.render(results=results))
+
+
 # For each implementation that we know of, based on it having a client and/or
 # server, work out permutations of all.
 def generate_permutations(impls: List[Dict]) -> List[Dict]:
@@ -114,3 +171,23 @@ def generate_permutations(impls: List[Dict]) -> List[Dict]:
                 'client': client
             })
     return permutations
+
+def packet_tree_str(packet, indent=0):
+    ret = ''
+    istr = ''
+    if indent > 1:
+        istr = '  ' * (indent - 1)
+    if isinstance(packet, pyroughtime.RoughtimePacket):
+        ret += '%s%s\n' % (istr, packet.get_tag_str())
+        for t in packet.get_tags():
+            ret += packet_tree_str(packet.get_tag(t), indent + 1)
+    elif isinstance(packet, pyroughtime.RoughtimeTag):
+        vlen = packet.get_value_len()
+        if vlen == 4 or vlen == 8:
+            val = str(packet.to_int())
+        else:
+            val = packet.get_value_bytes().hex()
+        ret += '%s%s (%3d) Val: %s\n' % (istr, packet.get_tag_str(), vlen, val)
+    else:
+        raise Exception('Bad tag type.')
+    return ret

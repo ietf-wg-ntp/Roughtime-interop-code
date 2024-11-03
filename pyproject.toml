@@ -8,6 +8,9 @@ authors = ["Sarah Grant <sarah.grant.ietf@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 pyyaml = "^6.0.2"
+jinja2 = "^3.1.4"
+scapy = "^2.6.0"
+pycryptodomex = "^3.21.0"
 
 [tool.poetry.scripts]
 plummet = 'plummet.cli:main'
