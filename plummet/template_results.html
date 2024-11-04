@@ -2,33 +2,67 @@
 <html lang="en">
 <head>
   <title>Plummet results</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura.css" type="text/css">
+  <style>
+    {% include 'normalize.css' %}
+  </style>
+  <style>
+    {% include 'sakura.css' %}
+  </style>
 </head>
 <body style="max-width: 80%;">
   <h1>Roughtime interoperability testing results</h1>
-  {% for r in results %}
-    <div style="border: 2px solid gray; border-radius: 25px; padding: 10px; margin-bottom: 25px;">
-    <p>
-      <strong>Server:</strong> {{ r.server }}<br/>
-      <strong>Client:</strong> {{ r.client }}<br/>
-      <strong>Result:</strong> {{ r.result }}<br/>
-    </p>
-    <p>Client log:</p>
-    <pre>
-<code>{{ r.client_log }}</code>
-    </pre>
-    <p>Server log:</p>
-    <pre>
-<code>{{ r.server_log }}</code>
-    </pre>
-    <p>Packets:</p>
-    {% for p in r.packets %}
-    <pre>
-<code>{{ p }}</code>
-    </pre>
+  <div>
+    <table style="text-align: center; vertical-align: middle;">
+    <tr>
+      <td>Server/client</td>
+      {% for c in clients %}
+      <td>{{ c }}</td>
+      {% endfor %}
+    </tr>
+    {% for s in servers %}
+    <tr>
+      <td>{{ s }}</td>
+      {% for c in clients %}
+        {% if results[s][c].result == 'success' %}
+          <td><a href="#{{s}}_{{c}}">&#9989;</a></td>
+        {% elif results[s][c].result == 'failure' %}
+          <td><a href="#{{s}}_{{c}}">&#10060;</a></td>
+        {% elif results[s][c].result == 'unknown' %}
+          <td><a href="#{{s}}_{{c}}">&#10067;</a></td>
+        {% else %}
+          <td><a href="#{{s}}_{{c}}">&#10071;</a></td>
+        {% endif %}
+      {% endfor %}
+    </tr>
     {% endfor %}
-    </div>
+    </table>
+  </div>
+  {% for s in servers %}
+    {% for c in clients %}
+      {% set r = results[s][c] %}
+      <div style="border: 2px solid gray; border-radius: 25px; padding: 10px; margin-bottom: 25px;">
+      <a name="{{s}}_{{c}}"></a>
+      <p>
+        <strong>Server:</strong> {{ r.server }}<br/>
+        <strong>Client:</strong> {{ r.client }}<br/>
+        <strong>Result:</strong> {{ r.result }}<br/>
+      </p>
+      <p>Client log:</p>
+      <pre>
+<code>{{ r.client_log }}</code>
+      </pre>
+      <p>Server log:</p>
+      <pre>
+<code>{{ r.server_log }}</code>
+      </pre>
+      <p>Packets:</p>
+      {% for p in r.packets %}
+      <pre>
+<code>{{ p }}</code>
+      </pre>
+      {% endfor %}
+      </div>
+    {% endfor %}
   {% endfor %}
 </body>
 </html>

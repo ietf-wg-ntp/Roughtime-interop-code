@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 import json
 import yaml
 import base64
@@ -62,7 +63,8 @@ def main() -> None:
         sys.exit(1)
 
     # Generate all the permutations of client and servers
-    permutations = generate_permutations(args.impls['implementations'])
+    impls = args.impls['implementations']
+    permutations = generate_permutations(impls)
 
     # Prepare the location
     start_time = datetime.datetime.now(datetime.timezone.utc)
@@ -78,7 +80,7 @@ def main() -> None:
 
     logger.debug(f'Iterating over {len(permutations)} permutations')
 
-    results = []
+    results = dict()
 
     # Iterate through each permutation, create a subdirectory, and run
     for perm in permutations:
@@ -101,7 +103,6 @@ def main() -> None:
         perm_config = os.path.abspath(args.perm_config)
         perm_cmd = f'{args.container} compose -f {perm_config} up'
         logger.debug(f'Running `{perm_cmd}` with a {args.timeout} second timeout...')
-        logger.debug
 
         if args.dry_run:
             logging.info('This is the bit where we pretend to run, but are not!')
@@ -120,40 +121,68 @@ def main() -> None:
         # Gather results
         res = {
             'client': perm['client'],
-            'server': perm['server'],
-            'result': 'unknown'
+            'server': perm['server']
         }
+
+        # Read client log and try to match against success and failure regexes
         with open(os.path.join(perm_dir, 'client.log')) as f:
             res['client_log'] = f.read()
+        success = failure = None
+        if perm['regex_success'] is not None:
+            success = re.compile(perm['regex_success']) \
+                        .search(res['client_log']) is not None
+        if perm['regex_failure'] is not None:
+            failure = re.compile(perm['regex_failure']) \
+                        .search(res['client_log']) is not None
+        if success and failure:
+            res['result'] = 'error'
+        elif success and not failure:
+            res['result'] = 'success'
+        elif not success and failure:
+            res['result'] = 'failure'
+        else:
+            res['result'] = 'unknown'
+
+        # Read server log and pcap file.
         with open(os.path.join(perm_dir, 'server.log')) as f:
             res['server_log'] = f.read()
         with open(os.path.join(perm_dir, 'server.pcap'), 'rb') as f:
             res['pcap'] = base64.b64encode(f.read()).decode('ASCII')
-        results.append(res)
+        if perm['server'] not in results:
+            results[perm['server']] = dict()
+        results[perm['server']][perm['client']] = res
 
-    # Create JSON file with results.
+    # Create JSON file with array of results.
+    flat_results = []
+    for s in results:
+        for c in results[s]:
+            flat_results.append(results[s][c])
     with open(os.path.join(output_dir, 'result.json'), 'w') as f:
-        f.write(json.dumps(results, indent=2, sort_keys=True))
+        f.write(json.dumps(flat_results, indent=2, sort_keys=True))
 
     # Parse results PCAP.
-    for r in results:
-        pcap_file = tempfile.NamedTemporaryFile(delete=True)
-        pcap_file.write(base64.b64decode(r['pcap']))
-        pcap_file.flush()
-        pcap = scapy.utils.rdpcap(pcap_file.name)
-        pcap_file.close()
-        r['packets'] = []
-        for p in pcap:
-            if p.sport == 2002 or p.dport == 2002:
-                # p.show()
-                rp = pyroughtime.RoughtimePacket(packet=p.load)
-                r['packets'].append(packet_tree_str(rp))
+    for srv in results.values():
+        for cli in srv.values():
+            pcap_file = tempfile.NamedTemporaryFile(delete=True)
+            pcap_file.write(base64.b64decode(cli['pcap']))
+            pcap_file.flush()
+            pcap = scapy.utils.rdpcap(pcap_file.name)
+            pcap_file.close()
+            cli['packets'] = []
+            for p in pcap:
+                if p.sport == 2002 or p.dport == 2002:
+                    rp = pyroughtime.RoughtimePacket(packet=p.load)
+                    cli['packets'].append(packet_tree_str(rp))
 
     # Render results HTML file.
+    servers = [x for x in impls if impls[x]['server'] and impls[x]['enabled']]
+    clients = [x for x in impls if impls[x]['client'] and impls[x]['enabled']]
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
     template = env.get_template('template_results.html')
     with open(os.path.join(output_dir, 'result.html'), 'w') as f:
-        f.write(template.render(results=results))
+        f.write(template.render(results=results,
+                                servers=servers,
+                                clients=clients))
 
 
 # For each implementation that we know of, based on it having a client and/or
@@ -168,7 +197,9 @@ def generate_permutations(impls: List[Dict]) -> List[Dict]:
                 continue
             permutations.append({
                 'server': server,
-                'client': client
+                'client': client,
+                'regex_success': impls[client].get('regex_success', None),
+                'regex_failure': impls[client].get('regex_failure', None)
             })
     return permutations
 

@@ -31,26 +31,36 @@ implementations:
     enabled: true
     client: true
     server: true
-  
+    regex_success: "Ping response"
+    regex_failure: "Ping error"
+
   craggy:
     enabled: true
     client: true
     server: false
- 
+    regex_success: "Current time is"
+    regex_failure: "Error making request"
+
   node-roughtime:
     enabled: true
     client: true
     server: false
+    regex_success: "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z"
+    regex_failure: "Error"
 
   pyroughtime:
     enabled: true
     client: true
     server: false
+    regex_success: "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} UTC"
+    regex_failure: "RoughtimeError"
 
   roughenough:
     enabled: true
     client: true
     server: true
+    regex_success: "Response ="
+    regex_failure: "Timeout waiting for response"
 
   roughtimed:
     enabled: true
@@ -61,3 +71,4 @@ implementations:
     enabled: true
     client: true
     server: false
+    regex_success: "midp \\d+ radi \\d+"
