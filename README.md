@@ -3,6 +3,9 @@
 This project aims to look at interop between Roughtime clients and servers,
 providing the means to run both against each other.
 
+The project is named after a plummet, a component of portable sundials which
+verify that it's positioned horizontally level.
+
 ## Development and Setup
 
 All implementations are provided as git submodules, you'll need to clone this
