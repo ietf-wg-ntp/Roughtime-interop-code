@@ -215,7 +215,8 @@ def packet_tree_str(packet, indent=0):
     elif isinstance(packet, pyroughtime.RoughtimeTag):
         vlen = packet.get_value_len()
         if vlen == 4 or vlen == 8:
-            val = str(packet.to_int())
+            val = packet.to_int()
+            val = '%d (0x%x)' % (val, val)
         else:
             val = packet.get_value_bytes().hex()
         ret += '%s%s (%3d) Val: %s\n' % (istr, packet.get_tag_str(), vlen, val)
