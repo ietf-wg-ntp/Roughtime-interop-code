@@ -3,7 +3,7 @@
 MODE=$1
 
 if [[ "$MODE" == "client" ]]; then
-    /target/release/roughenough-client -d roughtime-server 2002 &> /data/client.log;
+    /target/release/roughenough-client -d -p 11 roughtime-server 2002 &> /data/client.log;
 elif [[ "$MODE" == "server" ]]; then
     /target/release/roughenough-server ENV &> /data/server.log;
 else
