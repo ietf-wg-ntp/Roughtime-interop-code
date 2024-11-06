@@ -19,6 +19,20 @@
 [submodule "implementations/roughtimed/roughtimed"]
 	path = implementations/roughtimed/roughtimed
 	url = https://github.com/dansarie/roughtimed.git
+	branch = master
 [submodule "implementations/butterfield/butterfield"]
 	path = implementations/butterfield/butterfield
 	url = https://github.com/signalsforgranted/butterfield.git
+	branch = main
+[submodule "implementations/cloudflare/roughtime"]
+	branch = master
+[submodule "implementations/craggy/craggy"]
+	branch = main
+[submodule "implementations/node-roughtime/node-roughtime"]
+	branch = master
+[submodule "implementations/pyroughtime/pyroughtime"]
+	branch = master
+[submodule "implementations/roughenough/roughenough"]
+	branch = master
+[submodule "implementations/vroughtime/vroughtime"]
+	branch = main
