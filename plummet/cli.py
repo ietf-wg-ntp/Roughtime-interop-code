@@ -43,7 +43,9 @@ def main() -> None:
     parser.add_argument('--container', type=str, default='/usr/local/bin/docker',
                         help='Path to docker or your preferred container manager')
     parser.add_argument('--perm-config', type=str, default='etc/permutation.yml',
-                        help='Path to the ')
+                        help='Path to the permutation configuration')
+    parser.add_argument('--template', default='etc/template_results.html',
+                        help='Path to the HTML template for reporting')
     parser.add_argument('--timeout', default=10,
                         help='Timeout in seconds for each permutation run')
     parser.add_argument('--verbose', action=argparse.BooleanOptionalAction,
@@ -177,8 +179,8 @@ def main() -> None:
     # Render results HTML file.
     servers = [x for x in impls if impls[x]['server'] and impls[x]['enabled']]
     clients = [x for x in impls if impls[x]['client'] and impls[x]['enabled']]
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-    template = env.get_template('template_results.html')
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(os.path.abspath(args.template))))
+    template = env.get_template(os.path.basename(args.template))
     with open(os.path.join(output_dir, 'result.html'), 'w') as f:
         f.write(template.render(results=results,
                                 servers=servers,
