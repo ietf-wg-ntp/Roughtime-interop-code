@@ -3,7 +3,10 @@ name = "plummet"
 version = "0.1.0"
 description = "Roughtime interop harness"
 license = "Apache-2.0"
-authors = ["Sarah Grant <sarah.grant.ietf@gmail.com>"]
+authors = [
+    "Sarah Grant <sarah.grant.ietf@gmail.com>",
+    "Marcus Dansarie <marcus@dansarie.se>"
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
