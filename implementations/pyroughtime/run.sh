@@ -9,8 +9,6 @@ if [[ "$MODE" == "client" ]]; then
     /usr/src/app/pyroughtime.py -s roughtime-server 2002 $PUB_KEY &> /data/client.log;
 elif [[ "$MODE" == "server" ]]; then
     /usr/src/app/pyroughtime.py -t $PRIV_KEY &> /data/server.log;
-    echo "Not supported?";
-    exit 1;
 else
     echo "No mode specified, exiting!";
     exit 1;
