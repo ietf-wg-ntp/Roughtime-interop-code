@@ -1,21 +1,27 @@
 [submodule "vroughtime/vroughtime"]
 	path = implementations/vroughtime/vroughtime
 	url = https://github.com/oreparaz/vroughtime.git
+	branch = main
 [submodule "cloudflare/roughtime"]
 	path = implementations/cloudflare/roughtime
 	url = https://github.com/cloudflare/roughtime.git
+	branch = master
 [submodule "roughenough/roughenough"]
 	path = implementations/roughenough/roughenough
 	url = https://github.com/int08h/roughenough.git
+	branch = master
 [submodule "craggy/craggy"]
 	path = implementations/craggy/craggy
 	url = https://github.com/nahojkap/craggy.git
+	branch = main
 [submodule "pyroughtime/pyroughtime"]
 	path = implementations/pyroughtime/pyroughtime
 	url = https://github.com/dansarie/pyroughtime.git
+	branch = master
 [submodule "node-roughtime/node-roughtime"]
 	path = implementations/node-roughtime/node-roughtime
 	url = https://github.com/bnoordhuis/node-roughtime.git
+	branch = master
 [submodule "implementations/roughtimed/roughtimed"]
 	path = implementations/roughtimed/roughtimed
 	url = https://github.com/dansarie/roughtimed.git
@@ -23,16 +29,4 @@
 [submodule "implementations/butterfield/butterfield"]
 	path = implementations/butterfield/butterfield
 	url = https://github.com/signalsforgranted/butterfield.git
-	branch = main
-[submodule "implementations/cloudflare/roughtime"]
-	branch = master
-[submodule "implementations/craggy/craggy"]
-	branch = main
-[submodule "implementations/node-roughtime/node-roughtime"]
-	branch = master
-[submodule "implementations/pyroughtime/pyroughtime"]
-	branch = master
-[submodule "implementations/roughenough/roughenough"]
-	branch = master
-[submodule "implementations/vroughtime/vroughtime"]
 	branch = main
