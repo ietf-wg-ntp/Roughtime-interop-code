@@ -45,7 +45,7 @@ Or maybe something broke, in which case please file a issue with us.
 ## Including an Implementation
 
 Adding implementations to the harness has a few steps. For all, we use the same
-long term keypair for all, to make debugging a little easier:
+long term keypair to make debugging a little easier:
 
 ```
 Private key: BuXi3Chpe7Nj3gCXavLUIoGbxngyrWVa3pYIHswbzbU=
