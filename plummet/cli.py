@@ -11,19 +11,11 @@ import tempfile
 import argparse
 import subprocess
 import scapy.utils
+import pyroughtime
 import importlib.util
 from scapy.all import UDP
 from argparse import ArgumentParser
 from typing import Dict, List
-
-# Kludle for loading pyroughtime from implementations folder.
-dirname = os.path.dirname(__file__)
-filename = os.path.join(dirname,
-        '../implementations/pyroughtime/pyroughtime/pyroughtime.py')
-spec = importlib.util.spec_from_file_location('pyroughtime', filename)
-pyroughtime = importlib.util.module_from_spec(spec)
-sys.modules["module.name"] = pyroughtime
-spec.loader.exec_module(pyroughtime)
 
 CMD_INFO = """
 plummet takes all the known roughtime implementations and attempts to perform
