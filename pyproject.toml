@@ -20,7 +20,12 @@ plummet = 'plummet.cli:main'
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
+taskipy = "^1.14.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.taskipy.tasks]
+update = { cmd = "git submodule update --recursive --remote", help = "Pull all implementations code from main/master branch" }
+build = { cmd = "docker compose -f implementations/docker-compose.yml build", help = "Build all containers" }

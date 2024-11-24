@@ -10,7 +10,9 @@ verify that it's positioned horizontally level.
 
 All implementations are provided as git submodules, you'll need to clone this
 repository using the `--recurse-submodules`, or if you have already cloned it,
-you'll need to run `git submodule update --init --recursive`.
+you'll need to run `git submodule update --init --recursive`. To update all of
+the submodules `git submodule update --recursive --remote` will do the trick,
+or `poetry run task update` after your poetry environment is setup as below.
 
 You'll need Docker as well as [Poetry](https://python-poetry.org) installed.
 To get started, clone this repository, then run:
@@ -23,7 +25,7 @@ You can then run `poetry run plummet -h` to see the help information. That's not
 all, you can't just get going with running things, you'll need to build all the
 implementations locally, using:
 ```bash
-docker compose -f implementations/docker-compose.yml build
+poetry run task build
 ```
 This will take a while, and a lot of disk space. Enjoy a nice drink, or maybe
 even a biscuit while you wait for it.
