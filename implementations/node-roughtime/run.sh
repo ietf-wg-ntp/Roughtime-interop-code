@@ -3,7 +3,7 @@
 MODE=$1
 
 if [[ "$MODE" == "client" ]]; then
-    node /usr/src/app/client.js &> /data/client.log;
+    sleep 2 && node /usr/src/app/client.js &> /data/client.log;
 elif [[ "$MODE" == "server" ]]; then
     echo "Not supported!";
     exit 1;
