@@ -23,7 +23,7 @@
 implementations:
 
   butterfield:
-    enabled: false
+    enabled: true
     client: false
     server: true
 
