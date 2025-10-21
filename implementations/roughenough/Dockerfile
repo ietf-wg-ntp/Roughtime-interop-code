@@ -1,4 +1,4 @@
-FROM rust:1.70
+FROM rust:1.88
 
 ARG ROUGHENOUGH_FEATURES="default"
 
