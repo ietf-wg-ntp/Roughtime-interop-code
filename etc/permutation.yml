@@ -29,6 +29,10 @@ services:
       -  2002:2002/udp
     volumes:
       - ${PERM_DIR}:/data
+    networks:
+       plummet:
+         aliases:
+           - roughtime-server
 
   client:
     hostname: roughtime-client
@@ -39,12 +43,21 @@ services:
       - server
     volumes:
       - ${PERM_DIR}:/data
+    networks:
+       plummet:
+         aliases:
+           - roughtime-client
 
   server_pcap:
     image: nicolaka/netshoot
     depends_on:
       - server
     network_mode: service:server
-    command: tcpdump -i eth0 'udp port 2002' -w /data/server.pcap
+    command: tcpdump -i eth0 -w /data/server.pcap
     volumes:
       - ${PERM_DIR}:/data
+
+networks:
+  plummet:
+    enable_ipv4: true
+    enable_ipv6: false
