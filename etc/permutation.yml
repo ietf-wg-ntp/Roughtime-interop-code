@@ -53,7 +53,7 @@ services:
     depends_on:
       - server
     network_mode: service:server
-    command: tcpdump -i eth0 -w /data/server.pcap
+    command: tcpdump -i eth0 'udp port 2002' -w /data/server.pcap
     volumes:
       - ${PERM_DIR}:/data
 
