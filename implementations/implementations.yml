@@ -59,8 +59,8 @@ implementations:
     enabled: true
     client: true
     server: true
-    regex_success: "Response ="
-    regex_failure: "Timeout waiting for response"
+    regex_success: "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} UTC"
+    regex_failure: "Error querying"
 
   roughtimed:
     enabled: true
