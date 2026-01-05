@@ -30,3 +30,6 @@
 	path = implementations/butterfield/butterfield
 	url = https://github.com/signalsforgranted/butterfield.git
 	branch = main
+[submodule "implementations/roughly/roughly"]
+	path = implementations/roughly/roughly
+	url = https://github.com/teaishealthy/roughly
