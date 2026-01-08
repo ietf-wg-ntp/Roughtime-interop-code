@@ -67,6 +67,13 @@ implementations:
     client: false
     server: true
 
+  roughly:
+    enabled: true
+    client: true
+    server: false
+    regex_sucesss: "yay"
+    regex_failure: ":\\("
+
   vroughtime:
     enabled: true
     client: true
