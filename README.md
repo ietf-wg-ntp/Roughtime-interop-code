@@ -14,10 +14,11 @@ you'll need to run `git submodule update --init --recursive`. To update all of
 the submodules `git submodule update --recursive --remote` will do the trick,
 or `poetry run task update` after your poetry environment is setup as below.
 
-You'll need Docker as well as [Poetry](https://python-poetry.org) installed.
-To get started, clone this repository, then run:
+You'll need Docker with docker-compose as well as
+[Poetry](https://python-poetry.org) installed. To get started, clone this
+repository, then run:
 ```bash
-poetry shell
+poetry env activate
 poetry install
 ```
 
@@ -37,10 +38,23 @@ Once that's done, you'll need to kick off the actual interop test.
 ```bash
 poetry run plummet
 ```
-And go find yourself a good book to read. In the `results` folder there will be
-a subdirectory based on the start time containing each permutation tested. Your
-console will be filled of angry messages, but you should be satisfied. Now take
-your time, read the log files, peruse the packet captures, and enjoy.
+And go find yourself a good book to read.
+
+The most common source of problems is that Plummet expects the docker executable
+path to be `/usr/local/bin/docker`. If that is not the case on your computer,
+you can use the `--container` argument to specify the correct path. Just doing
+`poetry run plummet --container docker` usually works. Sometimes, things don't
+work when running Plummet for the first time after `poetry run task build`. If
+that is the case, you can try increasing the timeout with the `--timeout`
+option. The default is 10 seconds.
+
+Use `poetry run plummet --help` to list all command line options.
+
+When everything is done, the `results` folder have a subdirectory based on the
+start time containing each permutation tested. Your console will be filled of
+angry messages, but you should be satisfied. Now take your time, read the log
+files, peruse the packet captures, and enjoy. The `results.html` file should be
+a good starting point.
 
 Or maybe something broke, in which case please file a issue with us.
 
@@ -57,7 +71,7 @@ Public key:  Ixu7gqjJ9TU6IxsO8wxZxAFT5te6FcZZQq5vXFl35JE=
              231bbb82a8c9f5353a231b0ef30c59c40153e6d7ba15c65942ae6f5c5977e491
 ```
 
-To add an implmentation:
+To add an implementation:
 
 1. Create a directory under `implementations` with the git repo under it
 2. Make a Dockerfile that builds the container. We strongly advise against
@@ -68,9 +82,9 @@ To add an implmentation:
    "run.sh". It should take one argument, either "client", or "server". Logs
    should be written to `/data` as client.log or server.log respectively.
 4. Make sure that key material is configured as above.
-5. `implementations/implementations.yml` is what tells plummet what is available
+5. `implementations/implementations.yml` is what tells Plummet what is available
    and if they have client and/or server support. Fill it in.
-6. Run plummet and check the output in `results/`.
+6. Run Plummet and check the output in `results/`.
 7. Send us a PR, and have another biscuit, you deserve it.
 
 ## Licence
