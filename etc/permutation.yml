@@ -1,4 +1,3 @@
-
 #          _            This file forms as the configuration runtime for
 #        ,/_\,          testing each permutation of roughtime server and
 #      ,/_/ \_\,        client. Somewhere in between we packet capture
@@ -17,22 +16,19 @@
 #          /\
 #          \/
 
-name: "plummet"
+name: ${PERM_NAME}
 services:
-
   server:
     hostname: roughtime-server
     image: ${SERVER_IMAGE}
     pull_policy: never
     command: /run.sh server
-    ports:
-      -  2002:2002/udp
     volumes:
       - ${PERM_DIR}:/data
     networks:
-       plummet:
-         aliases:
-           - roughtime-server
+      plummet:
+        aliases:
+          - roughtime-server
 
   client:
     hostname: roughtime-client
@@ -44,9 +40,9 @@ services:
     volumes:
       - ${PERM_DIR}:/data
     networks:
-       plummet:
-         aliases:
-           - roughtime-client
+      plummet:
+        aliases:
+          - roughtime-client
 
   server_pcap:
     image: nicolaka/netshoot
