@@ -32,5 +32,8 @@ services:
   roughtimed:
     build: './roughtimed'
 
+  roughly:
+    build: './roughly'
+
   vroughtime:
     build: './vroughtime'

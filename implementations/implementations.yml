@@ -21,7 +21,6 @@
 #
 
 implementations:
-
   butterfield:
     enabled: true
     client: false
@@ -66,6 +65,13 @@ implementations:
     enabled: true
     client: false
     server: true
+
+  roughly:
+    enabled: true
+    client: true
+    server: true
+    regex_success: "Current time:"
+    regex_failure: "Error"
 
   vroughtime:
     enabled: true
