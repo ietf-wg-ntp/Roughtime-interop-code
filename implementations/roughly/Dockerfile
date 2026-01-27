@@ -5,8 +5,6 @@ RUN chmod +x run.sh
 
 WORKDIR /usr/src/app
 
-COPY run.py .
-
 COPY roughly roughly
 
-RUN pip install file:///usr/src/app/roughly
+RUN pip install file:///usr/src/app/roughly#egg=roughly[cli]
