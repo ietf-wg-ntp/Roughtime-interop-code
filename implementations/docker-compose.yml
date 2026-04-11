@@ -35,5 +35,8 @@ services:
   roughly:
     build: './roughly'
 
+  tannerryan-roughtime:
+    build: './tannerryan-roughtime'
+
   vroughtime:
     build: './vroughtime'

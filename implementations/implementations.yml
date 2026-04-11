@@ -73,6 +73,13 @@ implementations:
     regex_success: "Current time:"
     regex_failure: "Error"
 
+  tannerryan-roughtime:
+    enabled: true
+    client: true
+    server: true
+    regex_success: "Midpoint:\\s+\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z"
+    regex_failure: "^client:\\s"
+
   vroughtime:
     enabled: true
     client: true

@@ -33,3 +33,6 @@
 [submodule "implementations/roughly/roughly"]
 	path = implementations/roughly/roughly
 	url = https://github.com/teaishealthy/roughly
+[submodule "implementations/roughtime/roughtime"]
+	path = implementations/tannerryan-roughtime/roughtime
+	url = https://github.com/tannerryan/roughtime
