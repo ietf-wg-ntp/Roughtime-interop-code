@@ -18,7 +18,7 @@ import jinja2
 import pyroughtime  # type: ignore[import]
 import scapy.utils
 import yaml
-from scapy.layers.inet import UDP, TCP
+from scapy.layers.inet import TCP, UDP
 
 CMD_INFO = """
 plummet takes all the known roughtime implementations and attempts to perform
@@ -77,7 +77,12 @@ def main() -> None:
 
     # Generate all the permutations of client and servers
     implementations: Implementations = args.impls["implementations"]
-    permutations = generate_permutations(implementations)
+
+    if args.focus is not None and args.focus not in implementations:
+        logger.critical(f"--focus implementation '{args.focus}' is not known, exiting...")
+        sys.exit(1)
+
+    permutations = generate_permutations(implementations, focus=args.focus)
 
     # Prepare the location
     start_time = datetime.datetime.now(datetime.timezone.utc)
@@ -234,6 +239,15 @@ def parse_args():
         "--verbose", action=argparse.BooleanOptionalAction, help="Enable more verbosity"
     )
     parser.add_argument(
+        "--focus",
+        type=str,
+        default=None,
+        help=(
+            "Only run permutations where this implementation is the client or "
+            "the server instead of the full matrix."
+        ),
+    )
+    parser.add_argument(
         "--workers",
         type=int,
         default=1,
@@ -332,13 +346,18 @@ def run_permutation(
 
 
 # For each implementation that we know of, based on it having a client and/or
-# server, work out permutations of all.
-def generate_permutations(impls: Implementations) -> list[Permutation]:
+# server, work out permutations of all. If focus is given, restrict the
+# result to permutations where that implementation is the client or server.
+def generate_permutations(
+    impls: Implementations, focus: str | None = None
+) -> list[Permutation]:
     permutations: list[Permutation] = []
     for server_name, server in impls.items():
         if server["enabled"] and server["server"]:
             for client_name, client in impls.items():
                 if client["enabled"] and client["client"]:
+                    if focus is not None and focus not in (server_name, client_name):
+                        continue
                     permutations.append(
                         {
                             "server": server_name,

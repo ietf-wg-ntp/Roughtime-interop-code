@@ -23,11 +23,14 @@
     <tr>
       <td>{{ s }}</td>
       {% for c in clients %}
-        {% if results[s][c].result == 'success' %}
+        {% set r = results.get(s, {}).get(c) %}
+        {% if r is none %}
+          <td>&mdash;</td>
+        {% elif r.result == 'success' %}
           <td><a href="#{{s}}_{{c}}">&#9989;</a></td>
-        {% elif results[s][c].result == 'failure' %}
+        {% elif r.result == 'failure' %}
           <td><a href="#{{s}}_{{c}}">&#10060;</a></td>
-        {% elif results[s][c].result == 'unknown' %}
+        {% elif r.result == 'unknown' %}
           <td><a href="#{{s}}_{{c}}">&#10067;</a></td>
         {% else %}
           <td><a href="#{{s}}_{{c}}">&#10071;</a></td>
@@ -39,7 +42,8 @@
   </div>
   {% for s in servers %}
     {% for c in clients %}
-      {% set r = results[s][c] %}
+      {% set r = results.get(s, {}).get(c) %}
+      {% if r is not none %}
       <div style="border: 2px solid gray; border-radius: 25px; padding: 10px; margin-bottom: 25px;">
       <a name="{{s}}_{{c}}"></a>
       <p>
@@ -68,6 +72,7 @@
       </pre>
       {% endfor %}
       </div>
+      {% endif %}
     {% endfor %}
   {% endfor %}
 </body>

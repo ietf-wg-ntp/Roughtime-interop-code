@@ -50,6 +50,12 @@ option. The default is 10 seconds.
 
 Use `poetry run plummet --help` to list all command line options.
 
+If you only care about how a single implementation behaves, running the full
+matrix of every client against every server is wasteful. Pass
+`--focus <implementation>` to still consider all implementations, but only
+execute and report permutations where `<implementation>` is the client or the
+server, e.g. `poetry run plummet --focus pyroughtime`.
+
 When everything is done, the `results` folder have a subdirectory based on the
 start time containing each permutation tested. Your console will be filled of
 angry messages, but you should be satisfied. Now take your time, read the log
