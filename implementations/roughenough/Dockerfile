@@ -7,8 +7,8 @@ COPY run.sh .
 
 RUN cargo build --release --features ${ROUGHENOUGH_FEATURES}
 
-ENV ROUGHENOUGH_PORT 2002
+ENV ROUGHENOUGH_PORT 5319
 ENV ROUGHENOUGH_INTERFACE 0.0.0.0
-ENV ROUGHENOUGH_SEED 06e5e2dc28697bb363de00976af2d422819bc67832ad655ade96081ecc1bcdb5
+# The seed is passed via --seed-file in run.sh; ROUGHENOUGH_SEED is no longer accepted.
 
-EXPOSE 2002/udp 
+EXPOSE 5319/udp

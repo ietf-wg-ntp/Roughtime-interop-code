@@ -25,6 +25,7 @@ plummet takes all the known roughtime implementations and attempts to perform
 interop tests against each client/server pair.
 """
 
+ROUGHTIME_PORTS = (2002, 5319)
 
 class Result(TypedDict):
     client: str

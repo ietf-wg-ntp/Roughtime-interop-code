@@ -13,7 +13,7 @@
 
 #include "vrt.h"
 
-#define PORT 2002
+#define PORT 5319
 #define HOST "roughtime-server"
 #define RECV_BUFFER_LEN 1024
 
