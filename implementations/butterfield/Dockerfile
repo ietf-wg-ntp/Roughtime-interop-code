@@ -1,4 +1,4 @@
-FROM elixir:1.19.0-alpine
+FROM elixir:1.20.0-alpine
 
 COPY run.sh /
 
