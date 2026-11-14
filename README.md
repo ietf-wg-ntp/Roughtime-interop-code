@@ -40,10 +40,9 @@ poetry run plummet
 ```
 And go find yourself a good book to read.
 
-The most common source of problems is that Plummet expects the docker executable
-path to be `/usr/local/bin/docker`. If that is not the case on your computer,
-you can use the `--container` argument to specify the correct path. Just doing
-`poetry run plummet --container docker` usually works. Sometimes, things don't
+Plummet looks for the `docker` executable on your `PATH`. If it isn't there, or
+you want to use another container manager, use the `--container` argument to
+give its name or full path, e.g. `poetry run plummet --container podman`. Sometimes, things don't
 work when running Plummet for the first time after `poetry run task build`. If
 that is the case, you can try increasing the timeout with the `--timeout`
 option. The default is 10 seconds.

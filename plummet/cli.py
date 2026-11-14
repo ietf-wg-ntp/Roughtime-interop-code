@@ -176,26 +176,32 @@ def parse_pcap(
 ) -> dict[str, dict[str, TemplatableResults]]:
     for srv in results.values():
         for cli in srv.values():
+            cli["udp_packets"] = []  # type: ignore
+            cli["tcp_packets"] = []  # type: ignore
+            if not cli["pcap"]:
+                # No capture, e.g. the server crashed before tcpdump started.
+                continue
             pcap_file = tempfile.NamedTemporaryFile(delete=True)
             pcap_file.write(base64.b64decode(cli["pcap"]))
             pcap_file.flush()
             pcap = scapy.utils.rdpcap(pcap_file.name)
             pcap_file.close()
-            cli["udp_packets"] = []  # type: ignore
-            cli["tcp_packets"] = []  # type: ignore
             for p in pcap:
-                udp = p.getlayer(UDP)
-                tcp = p.getlayer(TCP)
-
-                if udp is not None:
-                    if udp.sport == 2002 or udp.dport == 2002:
-                        rp = pyroughtime.RoughtimePacket(packet=bytes(udp.payload))
-                        cli["udp_packets"].append(packet_tree_str(rp))  # type: ignore
-
-                if tcp is not None:
-                    if tcp.sport == 2002 or tcp.dport == 2002:
-                        rp = pyroughtime.RoughtimePacket(packet=bytes(udp.payload))
-                        cli["tcp_packets"].append(packet_tree_str(rp))  # type: ignore
+                for layer, key in ((UDP, "udp_packets"), (TCP, "tcp_packets")):
+                    seg = p.getlayer(layer)
+                    if seg is None:
+                        continue
+                    if seg.sport not in ROUGHTIME_PORTS and seg.dport not in ROUGHTIME_PORTS:
+                        continue
+                    payload = bytes(seg.payload)
+                    if not payload:
+                        # e.g. TCP handshake and ACK segments
+                        continue
+                    try:
+                        rp = pyroughtime.RoughtimePacket(packet=payload)
+                        cli[key].append(packet_tree_str(rp))  # type: ignore
+                    except Exception as exc:
+                        cli[key].append(f"Unparseable packet ({len(payload)} bytes): {exc}\n")  # type: ignore
 
     return results  # type: ignore
 
@@ -219,8 +225,8 @@ def parse_args():
     parser.add_argument(
         "--container",
         type=str,
-        default="/usr/local/bin/docker",
-        help="Path to docker or your preferred container manager",
+        default=None,
+        help="Path to docker or your preferred container manager (default: docker found on PATH)",
     )
     parser.add_argument(
         "--perm-config",
@@ -255,6 +261,15 @@ def parse_args():
         help="Number of worker threads for permutations. You can usually set this to the number of CPU cores you have.",
     )
     args = parser.parse_args()
+    # Resolve to an absolute path up front, so a missing binary fails here with
+    # a clear message instead of once per permutation.
+    container = shutil.which(args.container or "docker")
+    if container is None:
+        parser.error(
+            f"could not find {args.container or 'docker'!r}; "
+            "pass --container /path/to/docker"
+        )
+    args.container = container
     return args
 
 
@@ -269,7 +284,10 @@ def run_permutation(
     logger.debug(
         f"Preparing to run for server: {permutation['server']} client: {permutation['client']}"
     )
+    # Inherit the caller's environment: docker needs HOME (for ~/.docker
+    # contexts and CLI plugins such as compose) and PATH (for credential helpers).
     env = {
+        **os.environ,
         "SERVER_IMAGE": f"plummet-{permutation['server']}:latest",
         "CLIENT_IMAGE": f"plummet-{permutation['client']}:latest",
         "PERM_NAME": f"plummet-{permutation['server']}-{permutation['client']}",
@@ -306,8 +324,18 @@ def run_permutation(
     cleanup_cmd = f"{args.container} compose -f {perm_config} down --remove-orphans"
     subprocess.run(cleanup_cmd.split(" "), env=env, stdout=output, stderr=output)
 
-    with perm_dir.joinpath("client.log").open() as f:
-        client_log = f.read()
+    # A container that dies early leaves some of these missing; record the
+    # permutation anyway rather than dropping it from the results.
+    client_log_path = perm_dir.joinpath("client.log")
+    client_log = client_log_path.read_text() if client_log_path.exists() else ""
+    server_log_path = perm_dir.joinpath("server.log")
+    server_log = server_log_path.read_text() if server_log_path.exists() else ""
+    pcap_path = perm_dir.joinpath("server.pcap")
+    pcap = (
+        base64.b64encode(pcap_path.read_bytes()).decode("ASCII")
+        if pcap_path.exists()
+        else ""
+    )
 
     success = None
     failure = None
@@ -325,12 +353,8 @@ def run_permutation(
         result = "success"
     elif failure and not success:
         result = "failure"
-
-    with perm_dir.joinpath("server.log").open() as f:
-        server_log = f.read()
-
-    with perm_dir.joinpath("server.pcap").open("rb") as f:
-        pcap = base64.b64encode(f.read()).decode("ASCII")
+    if not client_log_path.exists():
+        result = "error"
 
     return (
         permutation["server"],
