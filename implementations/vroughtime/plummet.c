@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <assert.h>
@@ -27,6 +28,7 @@ static uint8_t public_key_plummet[] = {
   do {                                                                         \
     int ret;                                                                   \
     if ((ret = x) != VRT_SUCCESS) {                                            \
+      fprintf(stderr, "Error: %s failed with %d\n", #x, ret);                  \
       return (ret);                                                            \
     }                                                                          \
   } while (0)
@@ -36,6 +38,9 @@ int prepare_socket(void)
   int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
   assert(sockfd >= 0);
+  /* Don't wait forever for a server that ignores our request. */
+  struct timeval tv = {.tv_sec = 5, .tv_usec = 0};
+  setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof tv);
   return sockfd;
 }
 
@@ -47,9 +52,7 @@ void prepare_servaddr(struct sockaddr_in *servaddr)
 
   bzero((char *)servaddr, sizeof(*servaddr));
 
-  char **ip_addr;
-  memcpy(&ip_addr, &(he->h_addr_list[0]), sizeof(void *));
-  memcpy(&servaddr->sin_addr.s_addr, ip_addr, sizeof(struct in_addr));
+  memcpy(&servaddr->sin_addr, he->h_addr_list[0], sizeof(struct in_addr));
 
   servaddr->sin_family = AF_INET;
   servaddr->sin_port = htons(PORT);
@@ -74,15 +77,19 @@ int main(int argc, char **argv) {
   /* receive packet */
   assert(n==sizeof query);
   do {
-    n = recv(sockfd, recv_buffer, (sizeof recv_buffer) * sizeof recv_buffer[0], 0 /* flags */);
+    n = recv(sockfd, recv_buffer, sizeof recv_buffer, 0 /* flags */);
   } while (n == -1 && errno == EINTR);
+  if (n < 0) {
+    fprintf(stderr, "Error: no reply from server (%s)\n", strerror(errno));
+    return 1;
+  }
 
   /* parse response */
   uint64_t out_midpoint;
   uint32_t out_radii;
 
   CHECK(vrt_parse_response(nonce, 64, recv_buffer,
-                            sizeof recv_buffer * sizeof recv_buffer[0],
+                            (uint32_t)n,
                             public_key_plummet, &out_midpoint,
                             &out_radii));
   printf("midp %" PRIu64 " radi %u\n", out_midpoint, out_radii);
