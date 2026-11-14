@@ -85,3 +85,4 @@ implementations:
     client: true
     server: false
     regex_success: "midp \\d+ radi \\d+"
+    regex_failure: "Error: "
